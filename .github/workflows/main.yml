@@ -121,7 +121,7 @@ jobs:
         shell: bash
         run: |
           git clone --mirror https://github.com/alliedmodders/hl2sdk hl2sdk-proxy-repo
-          sdks=(bgt blade bms contagion csgo css darkm dods dota episode1 eye hl2dm insurgency l4d l4d2 nucleardawn orangebox portal2 swarm tf2)
+          sdks=(bgt blade bms contagion csgo css darkm dods dota eye hl2dm insurgency l4d l4d2 nucleardawn orangebox portal2 swarm tf2)
           for sdk in "${sdks[@]}"
           do
             git clone hl2sdk-proxy-repo -b $sdk hl2sdk-$sdk
