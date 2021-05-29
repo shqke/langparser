@@ -387,11 +387,9 @@ bool ParserContext::EvaluateCondition(const char* pszCond)
 		else if (V_stricmp(pszCond + 1, "PS3") == 0) {
 			return false;
 		}
-#if SOURCE_ENGINE != SE_EPISODEONE
 		else if (V_stricmp(pszCond + 1, "LOWVIOLENCE") == 0) {
 			return engine->IsLowViolence();
 		}
-#endif
 	}
 
 	DevWarning("Unknown condition \"%s\"\n", pszCond);
