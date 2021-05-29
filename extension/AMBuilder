@@ -1,0 +1,17 @@
+# vim: set sts=2 ts=8 sw=2 tw=99 et ft=python:
+import os.path
+
+projectName = 'langparser'
+
+project = Extension.HL2Project(builder, projectName + '.ext')
+project.sources += [
+  'extension.cpp',
+  'context.cpp',
+  os.path.join(Extension.sm_root, 'public', 'smsdk_ext.cpp'),
+]
+
+for sdk_name in Extension.sdks:
+  sdk = Extension.sdks[sdk_name]
+  Extension.HL2Config(project, projectName + '.ext.' + sdk.ext, sdk)
+
+Extension.extensions += builder.Add(project)
