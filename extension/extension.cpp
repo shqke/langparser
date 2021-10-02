@@ -7,42 +7,42 @@
 CExtension g_Extension;
 SMEXT_LINK(&g_Extension);
 
-IFileSystem* g_pFullFileSystem = NULL;
+IFileSystem* g_pFileSystem = NULL;
 
 ParseError_t CExtension::ParseFile(const char* pszRelativePath, ILanguageFileParserListener* pListener, char* error, size_t maxlength)
 {
-	FileHandle_t file = g_pFullFileSystem->Open(pszRelativePath, "rb", "GAME");
+	FileHandle_t file = g_pFileSystem->Open(pszRelativePath, "rb", "GAME");
 	if (file == FILESYSTEM_INVALID_HANDLE) {
 		V_snprintf(error, maxlength, "Unable to open file \"%s\"", pszRelativePath);
 		return ParseError_StreamOpen;
 	}
 
-	int fileSize = g_pFullFileSystem->Size(file);
-	int bufferSize = g_pFullFileSystem->GetOptimalReadSize(file, fileSize + sizeof(wchar_t));
+	int fileSize = g_pFileSystem->Size(file);
+	int bufferSize = g_pFileSystem->GetOptimalReadSize(file, fileSize + sizeof(wchar_t));
 
-	ucs2_t* pBuffer = (ucs2_t*)g_pFullFileSystem->AllocOptimalReadBuffer(file, bufferSize);
+	ucs2_t* pBuffer = (ucs2_t*)g_pFileSystem->AllocOptimalReadBuffer(file, bufferSize);
 	if (pBuffer == NULL) {
-		g_pFullFileSystem->Close(file);
+		g_pFileSystem->Close(file);
 
 		V_snprintf(error, maxlength, "Unable to allocate buffer (path: \"%s\", buffer size: %u)", pszRelativePath, bufferSize);
 		return ParseError_StreamRead;
 	}
 
-	if (g_pFullFileSystem->ReadEx(pBuffer, bufferSize, fileSize, file) == 0) {
-		g_pFullFileSystem->FreeOptimalReadBuffer(pBuffer);
-		g_pFullFileSystem->Close(file);
+	if (g_pFileSystem->ReadEx(pBuffer, bufferSize, fileSize, file) == 0) {
+		g_pFileSystem->FreeOptimalReadBuffer(pBuffer);
+		g_pFileSystem->Close(file);
 
 		V_snprintf(error, maxlength, "Unable to read from file \"%s\" (buffer size: %u)", pszRelativePath, bufferSize);
 		return ParseError_StreamRead;
 	}
 
-	g_pFullFileSystem->Close(file);
+	g_pFileSystem->Close(file);
 
 	// null-terminate the stream
 	pBuffer[fileSize / sizeof(ucs2_t)] = u'\0';
 
 	if (LittleShort(*pBuffer) != u'\ufeff') {
-		g_pFullFileSystem->FreeOptimalReadBuffer(pBuffer);
+		g_pFileSystem->FreeOptimalReadBuffer(pBuffer);
 
 		V_snprintf(error, maxlength, "Missing BOM (path: \"%s\")", pszRelativePath);
 		return ParseError_StreamRead;
