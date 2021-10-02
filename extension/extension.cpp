@@ -56,7 +56,7 @@ ParseError_t CExtension::ParseFile(const char* pszRelativePath, ILanguageFilePar
 	byteSwap.SwapBufferToTargetEndian(pBuffer, pBuffer, fileSize / sizeof(ucs2_t));
 
 	ParseError_t result = CExtension::ParseBuffer(pBuffer + 1, pListener, error, maxlength);
-	g_pFullFileSystem->FreeOptimalReadBuffer(pBuffer);
+	g_pFileSystem->FreeOptimalReadBuffer(pBuffer);
 	return result;
 }
 
@@ -74,6 +74,6 @@ bool CExtension::SDK_OnLoad(char* error, size_t maxlen, bool late)
 
 bool CExtension::SDK_OnMetamodLoad(ISmmAPI* ismm, char* error, size_t maxlen, bool late)
 {
-	GET_V_IFACE_CURRENT(GetEngineFactory, g_pFullFileSystem, IFileSystem, FILESYSTEM_INTERFACE_VERSION);
+	GET_V_IFACE_CURRENT(GetEngineFactory, g_pFileSystem, IFileSystem, FILESYSTEM_INTERFACE_VERSION);
 	return true;
 }
