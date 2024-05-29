@@ -1,9 +1,7 @@
 # vim: set sts=2 ts=8 sw=2 tw=99 et ft=python:
 import os.path
 
-projectName = 'langparser'
-
-project = Extension.HL2Project(builder, projectName + '.ext')
+project = builder.LibraryProject('langparser')
 project.sources += [
   'extension.cpp',
   'context.cpp',
@@ -12,6 +10,11 @@ project.sources += [
 
 for sdk_name in Extension.sdks:
   sdk = Extension.sdks[sdk_name]
-  Extension.HL2Config(project, projectName + '.ext.' + sdk.ext, sdk)
+  
+  for cxx in builder.targets:
+    if not cxx.target.arch in sdk.platformSpec[cxx.target.platform]:
+      continue
+    
+    Extension.HL2ExtConfig(project, builder, cxx, 'langparser.ext.' + sdk.ext, sdk)
 
 Extension.extensions += builder.Add(project)
