@@ -102,7 +102,7 @@ jobs:
         shell: bash
         run: |
           git clone --mirror https://github.com/alliedmodders/hl2sdk hl2sdk-proxy-repo
-          sdks=(bgt blade bms contagion csgo css darkm dods dota eye hl2dm insurgency l4d l4d2 nucleardawn orangebox portal2 swarm tf2)
+          sdks=(bgt blade bms contagion csgo css dods dota eye hl2dm insurgency l4d l4d2 nucleardawn orangebox swarm tf2)
           for sdk in "${sdks[@]}"
           do
             git clone hl2sdk-proxy-repo -b $sdk hl2sdk-$sdk
@@ -111,11 +111,12 @@ jobs:
       - name: Getting own repository
         uses: actions/checkout@v4
         with:
-          path: src
+          path: extension
+          submodules: recursive
           
       - name: Compiling langparser files
         shell: bash
-        working-directory: src
+        working-directory: extension
         run: |
           mkdir build
           cd build
@@ -130,4 +131,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: langparser-sm${{ matrix.sm_version }}-${{ matrix.os_short }}-${{ env.GITHUB_SHA_SHORT }}
-          path: src/build/package
+          path: extension/build/package

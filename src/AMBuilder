@@ -8,13 +8,12 @@ project.sources += [
   os.path.join(Extension.sm_root, 'public', 'smsdk_ext.cpp'),
 ]
 
-for sdk_name in Extension.sdks:
-  sdk = Extension.sdks[sdk_name]
-  
-  for cxx in builder.targets:
-    if not cxx.target.arch in sdk.platformSpec[cxx.target.platform]:
-      continue
-    
-    Extension.HL2ExtConfig(project, builder, cxx, 'langparser.ext.' + sdk.ext, sdk)
+for sdk_target in Extension.sdk_targets:
+  sdk = sdk_target.sdk
+  cxx = sdk_target.cxx
+
+  binary_name = 'langparser.ext.' + sdk['extension']
+  binary = Extension.HL2ExtConfig(project, builder, cxx, binary_name, sdk)
+  Extension.ConfigureForExtension(builder, binary.compiler)
 
 Extension.extensions += builder.Add(project)
